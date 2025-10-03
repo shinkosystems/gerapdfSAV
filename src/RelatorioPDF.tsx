@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
 
 // Componente para renderizar os detalhes de um Item de Auditoria (reutilizado 4 vezes)
 const ItemRelatorio = (item: RelatorioData['itensobras'][0]) => (
-  // O 'break' permite que o item não seja cortado entre páginas
   <View key={item.nr + item.iteminfringido} style={styles.itemContainer} break> 
     <Text style={styles.itemTitle}>
       {item.nr} | Status: {item.status} | Multa: {item.multa}
@@ -41,18 +40,28 @@ const ItemRelatorio = (item: RelatorioData['itensobras'][0]) => (
     <Text style={styles.itemDetails}>**Observação:** {item.observacao}</Text>
     <Text style={styles.itemDetails}>**Medida Proposta:** {item.medidaproposta}</Text>
     
-    {/* RENDERIZAÇÃO DAS IMAGENS */}
+    {/* RENDERIZAÇÃO DAS FOTOS ANTES (Lógica existente) */}
     {item.fotosantes && item.fotosantes.length > 0 && (
       <View style={styles.imageContainer}>
         <Text style={{ fontSize: 9, width: '100%', marginTop: 5, marginBottom: 5, fontWeight: 'bold' }}>Fotos Antes:</Text>
         {item.fotosantes.map((url, index) => (
-          // Usamos a URL do JSON para o componente Image
+          <Image key={index} style={styles.image} src={url} /> 
+        ))}
+      </View>
+    )}
+
+    {/* RENDERIZAÇÃO DAS FOTOS DEPOIS (NOVA LÓGICA) */}
+    {item.fotosdepois && item.fotosdepois.length > 0 && (
+      <View style={styles.imageContainer}>
+        <Text style={{ fontSize: 9, width: '100%', marginTop: 5, marginBottom: 5, fontWeight: 'bold' }}>Fotos Depois (Ação Corretiva):</Text>
+        {item.fotosdepois.map((url, index) => (
           <Image key={index} style={styles.image} src={url} /> 
         ))}
       </View>
     )}
   </View>
 );
+
 
 
 // Componente Principal do PDF

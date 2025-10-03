@@ -16,6 +16,7 @@ interface ItemAuditoria {
   iteminfringido: string;
   medidaproposta: string;
   fotosantes: string[] | null; 
+  fotosdepois: string[] | null;
 }
 
 // Interface principal do relatório (Exportada)
