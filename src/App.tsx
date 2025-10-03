@@ -4,13 +4,9 @@ import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
 import { useLocation } from 'react-router-dom';
 
-// 1. Definição da Interface (ajuste conforme as colunas da sua tabela!)
-interface Produto {
-  id: string; // Coluna usada para filtrar
-  nome: string;
-  // EXEMPLO: Adicione outras colunas, como:
-  // preco: number;
-}
+// Não precisamos mais da interface 'Produto' por enquanto, 
+// pois a RPC retorna um JSON complexo que trataremos como Record<string, any>
+// Você pode substituir Record<string, any> por uma interface real depois.
 
 // Hook para ler o ID da URL (?id=...)
 const useQuery = () => {
@@ -21,37 +17,45 @@ const App: React.FC = () => {
   const query = useQuery();
   const idDaUrl = query.get('id');
   
-  // 2. CORREÇÃO: Estado agora espera um ARRAY de Produtos (Produto[])
-  const [produtos, setProdutos] = useState<Produto[] | null>(null);
+  // O estado armazena o JSON complexo retornado pela RPC
+  const [relatorioJson, setRelatorioJson] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const buscarProduto = async () => {
+  const buscarRelatorio = async () => {
     if (!idDaUrl) {
       setError('ID não encontrado na URL. Use o formato: /?id=SEU_ID');
-      setProdutos(null);
+      setRelatorioJson(null);
+      return;
+    }
+    
+    // O parâmetro da RPC espera um tipo BIGINT, então garantimos que é um número.
+    const projetoId = Number(idDaUrl);
+    if (isNaN(projetoId)) {
+      setError('O ID do projeto deve ser um número válido (BIGINT).');
       return;
     }
 
     setLoading(true);
     setError(null);
-    setProdutos(null);
+    setRelatorioJson(null);
 
     try {
-      // 3. CORREÇÃO: Removido o .single() para permitir múltiplas linhas
-      const { data, error } = await supabase
-        .from('inspecoes') // <-- SUBSTITUA PELO NOME REAL DA SUA TABELA
-        .select('*')
-        .eq('projeto', idDaUrl); 
+      // 1. CHAMADA RPC CORRIGIDA
+      const { data, error } = await supabase.rpc(
+        'get_relatorio_auditoria_json', // NOME DA RPC
+        { p_projeto_id: projetoId }       // NOME E VALOR DO PARÂMETRO
+      );
       
       if (error) throw error;
       
-      // 4. CORREÇÃO: Passando o 'data' como um array de produtos (Produto[])
-      setProdutos(data as Produto[] | null);
+      // A RPC retorna o JSON na propriedade 'data'
+      setRelatorioJson(data as Record<string, any> | null);
       
     } catch (err: any) {
       console.error('Erro de busca:', err.message);
-      setError(`Erro ao buscar: ${err.message}`);
+      // O Supabase pode retornar erros de RLS ou de execução da função
+      setError(`Erro ao buscar: ${err.message}. Verifique o RLS ou o nome da RPC.`);
     } finally {
       setLoading(false);
     }
@@ -59,37 +63,33 @@ const App: React.FC = () => {
 
   return (
     <div style={{ padding: '20px', textAlign: 'center', fontFamily: 'Arial' }}>
-      <h1>Buscar Dados com ID da URL</h1>
+      <h1>Buscar Dados com RPC</h1>
       <p>
-        **ID da URL:** <code style={{ backgroundColor: '#eee', padding: '2px 4px' }}>{idDaUrl || 'Aguardando ID...'}</code>
+        **ID do Projeto (da URL):** <code style={{ backgroundColor: '#eee', padding: '2px 4px' }}>{idDaUrl || 'Aguardando ID...'}</code>
       </p>
 
       <button 
-        onClick={buscarProduto} 
+        onClick={buscarRelatorio} // Chama a nova função
         disabled={loading || !idDaUrl}
         style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer', backgroundColor: '#333', color: 'white', border: 'none', borderRadius: '4px' }}
       >
-        {loading ? 'Buscando...' : 'Acessar Supabase'}
+        {loading ? 'Buscando JSON...' : 'Buscar Relatório via RPC'}
       </button>
 
-      <div style={{ marginTop: '30px' }}>
+      <div style={{ marginTop: '30px', textAlign: 'left', maxWidth: '800px', margin: '30px auto' }}>
         {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
         
-        {/* 5. Renderização dos resultados em lista */}
-        {produtos && produtos.length > 0 ? (
+        {/* EXIBIÇÃO DO JSON NA TELA */}
+        {relatorioJson ? (
           <div>
-            <h2>{produtos.length} Resultados Encontrados</h2>
-            {produtos.map((p) => (
-              // Use a chave primária real do seu produto
-              <div key={p.id} style={{ border: '1px solid #ccc', margin: '10px auto', padding: '15px', maxWidth: '400px', textAlign: 'left' }}>
-                <p><strong>Nome:</strong> {p.nome}</p>
-                <p><strong>ID (do registro):</strong> {p.id}</p>
-                {/* Adicione outros campos aqui */}
-              </div>
-            ))}
+            <h2>JSON do Relatório Encontrado:</h2>
+            <pre style={{ backgroundColor: '#f4f4f4', padding: '15px', borderRadius: '4px', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+              {/* Formata e exibe o JSON de forma legível */}
+              {JSON.stringify(relatorioJson, null, 2)}
+            </pre>
           </div>
         ) : (
-          !loading && <p>Nenhum dado encontrado ou ID ausente.</p>
+          !loading && <p style={{ textAlign: 'center' }}>Nenhum JSON de relatório encontrado ou ID ausente.</p>
         )}
       </div>
     </div>
