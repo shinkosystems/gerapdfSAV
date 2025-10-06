@@ -1,4 +1,4 @@
-// src/App.tsx - DOWNLOAD EM 1 CLIQUE, VISUAL MINIMALISTA E BOTÃO NO TOPO
+// src/App.tsx - CÓDIGO CORRIGIDO PARA O ERRO DE BUILD (TS6133)
 
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
@@ -18,7 +18,7 @@ const App: React.FC = () => {
   const idDaUrl = query.get('id');
   
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  // [CORRIGIDO] Linha removida: const [error, setError] = useState<string | null>(null);
 
   const handleDownload = async () => {
     if (!idDaUrl) {
@@ -33,7 +33,7 @@ const App: React.FC = () => {
     }
 
     setLoading(true);
-    setError(null);
+    // [CORRIGIDO] Linha removida: setError(null);
 
     try {
       // 1. BUSCAR JSON
