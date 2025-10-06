@@ -1,7 +1,6 @@
 #root {
-  /* Mantém a centralização horizontal (max-width e margin: auto) */
-  max-width: 1280px;
-  margin: 0 auto;
+  /* ❌ REMOVIDO: max-width: 1280px; - Permitindo a expansão de 100% */
+  /* ❌ REMOVIDO: margin: 0 auto; - Não é necessário para 100% de largura */
   
   /* MANTIDO: Remove o padding superior do #root, deixando o App.tsx controlar o espaço. */
   padding: 0 2rem 2rem 2rem; 
