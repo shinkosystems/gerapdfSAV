@@ -78,10 +78,10 @@ const App: React.FC = () => {
       
       {/* 2. MOLDURA COM BACKGROUND */}
       <div style={{
-          backgroundColor: 'rgba(232, 232, 232, 1)', 
+          backgroundColor: 'rgba(226, 226, 226, 1)', 
           padding: '8px 0px', 
           boxShadow: '0 4px 8px rgba(0,0,0,0.1)', 
-          borderRadius: '10px', 
+          borderRadius: '0px', 
           width: '100%', 
           display: 'block', 
       }}>
