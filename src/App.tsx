@@ -1,4 +1,4 @@
-// src/App.tsx - CÓDIGO FINAL LIMPO E AJUSTADO PARA WEBVIEW
+// src/App.tsx - CÓDIGO FINAL LIMPO, EXPANSIVO E COM BACKGROUND #ECECEC
 
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
@@ -71,15 +71,18 @@ const App: React.FC = () => {
     // 1. CONTAINER EXTERNO: Alinhamento ao topo, 100% de largura.
     <div className="App" style={{ 
         fontFamily: 'Arial',
-        paddingTop: '0px', // ESPAÇO DO TOPO
+        padding: '8px', // MANTIDO: O espaçamento de 8px que você definiu.
         width: '100%', 
         textAlign: 'center', 
     }}>
       
-      {/* 2. MOLDURA INVISÍVEL (Wrapper): Garante 100% de largura para o botão. */}
+      {/* 2. MOLDURA COM BACKGROUND: Ocupa 100% da largura, possui cor de fundo e mantém espaçamento interno. */}
       <div style={{
-          padding: '0 8px', // Apenas padding lateral para espaçar o botão nas bordas.
-          width: '100%', 
+          backgroundColor: '#ececec', // ⬅️ NOVO: Cor de fundo solicitada
+          padding: '16px', // ⬅️ RESTAURADO: Padding interno para a moldura
+          boxShadow: '0 4px 8px rgba(0,0,0,0.1)', // RESTAURADO: Sombra
+          borderRadius: '10px', // RESTAURADO: Cantos arredondados
+          width: '100%', // Mantém 100% de largura para expansão
           display: 'block', 
       }}>
           
@@ -95,9 +98,9 @@ const App: React.FC = () => {
               color: 'white', 
               border: 'none', 
               borderRadius: '40px', 
-              width: '100%', // Faz o botão ocupar 100% da largura da div invisível
+              width: '100%', // Faz o botão ocupar 100% da largura da moldura
               minWidth: '320px', 
-              height: '48px', // Altura fixa
+              height: '48px', 
             }}
           >
             {loading ? 'Gerando Relatório...' : 'Gerar Relatório'}
