@@ -25,15 +25,6 @@ a:hover {
 /* ⬅️ CORREÇÃO CRÍTICA: Substituído 'place-items: center' por regras explícitas para alinhamento ao TOPO */
 body {
   margin: 0;
-  display: flex;
-  /* ❌ Removido: place-items: center; */
-  
-  /* NOVO: Alinhamento ao TOPO (vertical) */
-  flex-direction: column;
-  justify-content: flex-start; 
-  /* NOVO: Centralização (horizontal) */
-  align-items: center; 
-  
   min-width: 320px;
   min-height: 100vh;
 }
