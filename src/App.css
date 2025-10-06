@@ -4,7 +4,7 @@
   
   /* MANTIDO: Remove o padding superior do #root, deixando o App.tsx controlar o espaço. */
   padding: 0 2rem 2rem 2rem; 
-  
+  overflow: hidden;
   text-align: center;
   
   /* MANTIDO: Ocupa a altura total disponível no body. */
