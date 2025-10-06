@@ -1,4 +1,4 @@
-// src/App.tsx - CÓDIGO FINAL COM AJUSTE DE LARGURA PARA WEBVIEW
+// src/App.tsx - CÓDIGO FINAL LIMPO E AJUSTADO PARA WEBVIEW
 
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
@@ -68,22 +68,19 @@ const App: React.FC = () => {
   };
 
   return (
-    // 1. CONTAINER EXTERNO: Usa 100% de largura, adequado para WebViews.
+    // 1. CONTAINER EXTERNO: Alinhamento ao topo, 100% de largura.
     <div className="App" style={{ 
         fontFamily: 'Arial',
-        paddingTop: '16px', // ESPAÇO DO TOPO
-        width: '100%', // ⬅️ ALTERADO: Usa 100% em vez de 100vw
+        paddingTop: '0px', // ESPAÇO DO TOPO
+        width: '100%', 
         textAlign: 'center', 
     }}>
       
-      {/* 2. MOLDURA BRANCA: Ocupa 100% da largura do container pai */}
+      {/* 2. MOLDURA INVISÍVEL (Wrapper): Garante 100% de largura para o botão. */}
       <div style={{
-          backgroundColor: '#FFFFFF', 
-          padding: '16px',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.1)', 
-          borderRadius: '10px',
-          width: '100%', // ⬅️ ALTERADO: Ocupa 100% da largura disponível
-          display: 'block', // ⬅️ ALTERADO: Deve ser block para ocupar 100%
+          padding: '0 8px', // Apenas padding lateral para espaçar o botão nas bordas.
+          width: '100%', 
+          display: 'block', 
       }}>
           
           <button 
@@ -98,9 +95,9 @@ const App: React.FC = () => {
               color: 'white', 
               border: 'none', 
               borderRadius: '40px', 
-              width: '100%', // ⬅️ NOVO: Faz o botão ocupar 100% da moldura
-              minWidth: '320px', // Mantém a garantia de largura mínima
-              height: '48px',
+              width: '100%', // Faz o botão ocupar 100% da largura da div invisível
+              minWidth: '320px', 
+              height: '48px', // Altura fixa
             }}
           >
             {loading ? 'Gerando Relatório...' : 'Gerar Relatório'}
