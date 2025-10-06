@@ -78,7 +78,7 @@ const App: React.FC = () => {
       
       {/* 2. MOLDURA COM BACKGROUND: Ocupa 100% da largura, possui cor de fundo e mantém espaçamento interno. */}
       <div style={{
-          backgroundColor: '#ececec', // ⬅️ NOVO: Cor de fundo solicitada
+          backgroundColor: '#dcdcdc', // ⬅️ NOVO: Cor de fundo solicitada
           padding: '8px', // ⬅️ RESTAURADO: Padding interno para a moldura
           boxShadow: '0 4px 8px rgba(0,0,0,0.1)', // RESTAURADO: Sombra
           borderRadius: '10px', // RESTAURADO: Cantos arredondados
