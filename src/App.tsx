@@ -1,14 +1,12 @@
-// src/App.tsx - CÓDIGO CORRIGIDO PARA O ERRO DE BUILD (TS6133)
+// src/App.tsx - CÓDIGO FINAL COM AJUSTE DE LARGURA PARA WEBVIEW
 
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
 import { useLocation } from 'react-router-dom';
 import { pdf } from '@react-pdf/renderer'; 
-// Importação correta do componente e do tipo (interface)
 import RelatorioPDF, { type RelatorioData } from './RelatorioPDF'; 
 
 
-// Hook para ler o ID da URL (?id=...)
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 };
@@ -18,7 +16,6 @@ const App: React.FC = () => {
   const idDaUrl = query.get('id');
   
   const [loading, setLoading] = useState<boolean>(false);
-  // [CORRIGIDO] Linha removida: const [error, setError] = useState<string | null>(null);
 
   const handleDownload = async () => {
     if (!idDaUrl) {
@@ -33,10 +30,8 @@ const App: React.FC = () => {
     }
 
     setLoading(true);
-    // [CORRIGIDO] Linha removida: setError(null);
 
     try {
-      // 1. BUSCAR JSON
       const { data, error: fetchError } = await supabase.rpc(
         'get_relatorio_auditoria_json', 
         { p_projeto_id: projetoId }       
@@ -47,12 +42,10 @@ const App: React.FC = () => {
       
       const relatorioJsonData = data as RelatorioData;
 
-      // 2. GERAR O PDF COMO BLOB (Geração assíncrona do documento)
       const blob = await pdf(
         <RelatorioPDF data={relatorioJsonData} />
       ).toBlob();
 
-      // 3. INICIAR O DOWNLOAD MANUALMENTE
       const projectName = relatorioJsonData.nomeprojeto || 'Projeto';
       const fileName = `Relatorio-${projectName}-${idDaUrl}.pdf`;
       
@@ -75,25 +68,24 @@ const App: React.FC = () => {
   };
 
   return (
-    // 1. CONTAINER EXTERNO: Layout do topo. Usa padding-top para empurrar a moldura para baixo.
-    <div style={{ 
+    // 1. CONTAINER EXTERNO: Usa 100% de largura, adequado para WebViews.
+    <div className="App" style={{ 
         fontFamily: 'Arial',
-        paddingTop: '16px', // Espaço do topo da tela
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center', // Centraliza a moldura horizontalmente
-        // Importante: Não definimos background aqui para que o fundo seja o padrão do body.
+        paddingTop: '16px', // ESPAÇO DO TOPO
+        width: '100%', // ⬅️ ALTERADO: Usa 100% em vez de 100vw
+        textAlign: 'center', 
     }}>
       
-      {/* 2. MOLDURA BRANCA (Contém o botão com 16px de padding ao redor) */}
+      {/* 2. MOLDURA BRANCA: Ocupa 100% da largura do container pai */}
       <div style={{
           backgroundColor: '#FFFFFF', 
-          padding: '16px', // A moldura de 16px
+          padding: '16px',
           boxShadow: '0 4px 8px rgba(0,0,0,0.1)', 
           borderRadius: '10px',
+          width: '100%', // ⬅️ ALTERADO: Ocupa 100% da largura disponível
+          display: 'block', // ⬅️ ALTERADO: Deve ser block para ocupar 100%
       }}>
           
-          {/* BOTÃO ÚNICO */}
           <button 
             onClick={handleDownload}
             disabled={loading || !idDaUrl}
@@ -106,7 +98,8 @@ const App: React.FC = () => {
               color: 'white', 
               border: 'none', 
               borderRadius: '40px', 
-              minWidth: '320px',
+              width: '100%', // ⬅️ NOVO: Faz o botão ocupar 100% da moldura
+              minWidth: '320px', // Mantém a garantia de largura mínima
               height: '48px',
             }}
           >
