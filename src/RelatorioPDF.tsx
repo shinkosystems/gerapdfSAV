@@ -1,4 +1,4 @@
-// src/RelatorioPDF.tsx - CÓDIGO FINAL CORRIGIDO (Escopo, Ordem e Espaçamento Corretos)
+// src/RelatorioPDF.tsx - CÓDIGO FINAL CORRIGIDO COM SPACER (Escopo, Ordem e Espaçamento Fixos)
 
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
@@ -41,9 +41,9 @@ nomeprojeto: string | null;
 }
 
 
-// Estilos (Mantido o paddingTop para reserva de espaço: 130)
+// Estilos (Ajustado o paddingTop para 146, reservando espaço para o header + spacer)
 const styles = StyleSheet.create({
-page: { paddingHorizontal: 30, paddingTop: 130, paddingBottom: 50, backgroundColor: '#FFFFFF' }, 
+page: { paddingHorizontal: 30, paddingTop: 146, paddingBottom: 50, backgroundColor: '#FFFFFF' }, // <<<< NOVO AJUSTE AQUI: 146
 headerContainer: {
 flexDirection: 'row',
 justifyContent: 'space-between',
@@ -215,7 +215,7 @@ const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) 
 };
 
 
-// COMPONENTE: Cabeçalho Fixo (Permanece fora, pois é usado pelo Document, não pelas funções internas)
+// COMPONENTE: Cabeçalho Fixo (Adicionado o espaçador de 16pt)
 const HeaderComponent = ({ data }: { data: RelatorioData }) => {
     const clientLogo = (data as any).clientelogo && (data as any).clientelogo.length > 0
         ? (data as any).clientelogo
@@ -242,8 +242,8 @@ const HeaderComponent = ({ data }: { data: RelatorioData }) => {
                 {clientLogoFinal && <Image style={styles.logoHeader} src={clientLogoFinal} />}
             </View>
 
-            {/* Bloco 2: Informações de Resumo */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15, paddingBottom: 5, borderBottom: '1px solid #ccc' }}>
+            {/* Bloco 2: Informações de Resumo - REMOVIDO marginBottom e paddingBottom */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1px solid #ccc' }}>
                 <View>
                     <Text style={styles.infoText}><Text style={styles.infoTextBold}>Preparado por:</Text> {data.company.nomeempresa}</Text>
                     <Text style={styles.infoText}><Text style={styles.infoTextBold}>Local da Inspeção:</Text> {data.endereco}</Text>
@@ -254,6 +254,9 @@ const HeaderComponent = ({ data }: { data: RelatorioData }) => {
                     <Text style={styles.infoTextRight}><Text style={styles.infoTextRightBold}>Executado por:</Text> {data.nomeinspetor}</Text>
                 </View>
             </View>
+            
+            {/* 3. SPACER/ESPAÇADOR FIXO: 16pt (Sua sugestão para forçar o espaçamento) */}
+            <View style={{ height: 16 }} />
         </View>
     );
 };
@@ -373,8 +376,8 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
                 {/* 1. CABEÇALHO FIXO: Posição absoluta */}
                 <HeaderComponent data={data} />
                 
-                {/* 2. CONTEÚDO DA PÁGINA: Padding Top para afastar o conteúdo do cabeçalho fixo */}
-                <View style={{ paddingTop: 15 }}>
+                {/* 2. CONTEÚDO DA PÁGINA: NÃO PRECISA MAIS DE paddingTop, o styles.page já reservou o espaço! */}
+                <View> 
                     
                     <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 5, fontWeight: 'bold' }}>SITUAÇÃO GERAL</Text>
 
