@@ -55,7 +55,7 @@ logoHeader: { width: 60, height: 60, objectFit: 'contain' as any },
 reportTitle: { fontSize: 18, fontWeight: 'bold', textAlign: 'center', flexGrow: 1, color: '#333' },
 sectionContainer: { paddingBottom: 5, borderBottom: '1px solid #ddd' },
 
-sectionHeader: { fontSize: 14, marginTop: 8, marginBottom: 2, fontWeight: 'bold', color: '#333' },
+sectionHeader: { fontSize: 14, marginTop: 16, marginBottom: 2, fontWeight: 'bold', color: '#333' },
 
 infoText: { fontSize: 10, marginBottom: 3 },
 infoTextBold: { fontSize: 10, marginBottom: 3, fontWeight: 'bold' },
@@ -187,7 +187,7 @@ const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) 
             </View>
 
             <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                <Text style={styles.coverTitle}>Relatório de Auditoria</Text>
+                <Text style={styles.coverTitle}>Relatório</Text>
                 <Text style={styles.coverSubtitle}>{data.nomeprojeto}</Text>
             </View>
 
@@ -233,7 +233,7 @@ const HeaderComponent = ({ data }: { data: RelatorioData }) => {
                 {data.logo_url && <Image style={styles.logoHeader} src={data.logo_url} />}
 
                 <View style={{ marginHorizontal: 15, alignItems: 'center' }}>
-                    <Text style={styles.reportTitle}>Relatório de Auditoria</Text>
+                    <Text style={styles.reportTitle}>Relatório</Text>
                     <Text style={{ fontSize: 10, color: '#555' }}>
                         {data.nomeprojeto}
                     </Text>
