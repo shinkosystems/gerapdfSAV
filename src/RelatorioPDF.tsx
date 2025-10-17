@@ -1,4 +1,4 @@
-// src/RelatorioPDF.tsx - CÓDIGO FINAL CORRIGIDO COM SPACER (Escopo, Ordem e Espaçamento Fixos)
+// src/RelatorioPDF.tsx - CÓDIGO FINAL COM SPACER E ESCOPO CORRIGIDOS
 
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
@@ -43,7 +43,7 @@ nomeprojeto: string | null;
 
 // Estilos (Ajustado o paddingTop para 146, reservando espaço para o header + spacer)
 const styles = StyleSheet.create({
-page: { paddingHorizontal: 30, paddingTop: 146, paddingBottom: 50, backgroundColor: '#FFFFFF' }, // <<<< NOVO AJUSTE AQUI: 146
+page: { paddingHorizontal: 30, paddingTop: 146, paddingBottom: 50, backgroundColor: '#FFFFFF' }, // <<<< AJUSTE PARA O SPACER (130 + 16)
 headerContainer: {
 flexDirection: 'row',
 justifyContent: 'space-between',
@@ -215,7 +215,7 @@ const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) 
 };
 
 
-// COMPONENTE: Cabeçalho Fixo (Adicionado o espaçador de 16pt)
+// COMPONENTE: Cabeçalho Fixo (ADICIONADO SPACER DE 16PT)
 const HeaderComponent = ({ data }: { data: RelatorioData }) => {
     const clientLogo = (data as any).clientelogo && (data as any).clientelogo.length > 0
         ? (data as any).clientelogo
@@ -255,7 +255,7 @@ const HeaderComponent = ({ data }: { data: RelatorioData }) => {
                 </View>
             </View>
             
-            {/* 3. SPACER/ESPAÇADOR FIXO: 16pt (Sua sugestão para forçar o espaçamento) */}
+            {/* 3. SPACER/ESPAÇADOR FIXO: 16pt (Conforme solicitado) */}
             <View style={{ height: 16 }} />
         </View>
     );
@@ -373,10 +373,10 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
             {/* PÁGINA 2 em diante: CONTEÚDO DO RELATÓRIO */}
             <Page size="A4" style={styles.page}>
                 
-                {/* 1. CABEÇALHO FIXO: Posição absoluta */}
+                {/* 1. CABEÇALHO FIXO: Posição absoluta com o spacer de 16pt */}
                 <HeaderComponent data={data} />
                 
-                {/* 2. CONTEÚDO DA PÁGINA: NÃO PRECISA MAIS DE paddingTop, o styles.page já reservou o espaço! */}
+                {/* 2. CONTEÚDO DA PÁGINA: O View do conteúdo não precisa de paddingTop. O styles.page e o spacer já definiram o espaço total. */}
                 <View> 
                     
                     <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 5, fontWeight: 'bold' }}>SITUAÇÃO GERAL</Text>
