@@ -1,4 +1,4 @@
-// src/RelatorioPDF.tsx - CÓDIGO FINAL CORRIGIDO (Escopo e Espaçamento)
+// src/RelatorioPDF.tsx - CÓDIGO FINAL CORRIGIDO (Escopo, Ordem e Espaçamento Corretos)
 
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
@@ -151,7 +151,7 @@ marginBottom: 50,
 }
 });
 
-// FUNÇÕES E COMPONENTES AUXILIARES (Mantidos fora)
+// FUNÇÕES E COMPONENTES AUXILIARES (Mantidos fora do RelatorioPDF)
 const getUniqueNrs = (data: RelatorioData): string[] => {
     const allItems = [
         ...(data.itensobras || []),
@@ -215,7 +215,7 @@ const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) 
 };
 
 
-// COMPONENTE: Cabeçalho Fixo
+// COMPONENTE: Cabeçalho Fixo (Permanece fora, pois é usado pelo Document, não pelas funções internas)
 const HeaderComponent = ({ data }: { data: RelatorioData }) => {
     const clientLogo = (data as any).clientelogo && (data as any).clientelogo.length > 0
         ? (data as any).clientelogo
@@ -265,7 +265,7 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
 
     let isFirstSectionRendered = false;
 
-    // COMPONENTE MOVIDO PARA DENTRO: StatusDot (Necessário para ItemRelatorio)
+    // 1. COMPONENTE AUXILIAR 1: StatusDot
     const StatusDot = ({ status }: { status: string }) => {
         let color = '#AAAAAA';
         const normalizedStatus = status.trim().toLowerCase();
@@ -284,7 +284,7 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
         );
     };
 
-    // COMPONENTE MOVIDO PARA DENTRO: ItemRelatorio (Resolve o erro de escopo)
+    // 2. COMPONENTE AUXILIAR 2: ItemRelatorio (Usa StatusDot)
     const ItemRelatorio = ({ item, forceNoBreak = false }: { item: ItemAuditoria, forceNoBreak?: boolean }) => (
         <View
             key={item.nr + item.iteminfringido}
@@ -341,7 +341,7 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
         </View>
     );
     
-    // Função centralizada para renderizar as seções de cards
+    // 3. FUNÇÃO AUXILIAR: renderSection (Usa ItemRelatorio)
     const renderSection = (items: ItemAuditoria[], title: string) => {
         if (items.length === 0) return null;
 
@@ -353,7 +353,6 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
         }
 
         return (
-            // Esta View contém a chamada ao ItemRelatorio, que agora está no escopo
             <View style={{ ...styles.sectionContainer, marginBottom: 15 }} break={shouldBreak}> 
                 <Text style={styles.sectionHeader}>{title} ({items.length})</Text>
 
@@ -375,7 +374,7 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
                 <HeaderComponent data={data} />
                 
                 {/* 2. CONTEÚDO DA PÁGINA: Padding Top para afastar o conteúdo do cabeçalho fixo */}
-                <View style={{ paddingTop: 15 }}> {/* AJUSTE MANTIDO PARA ESPAÇAMENTO*/}
+                <View style={{ paddingTop: 15 }}>
                     
                     <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 5, fontWeight: 'bold' }}>SITUAÇÃO GERAL</Text>
 
