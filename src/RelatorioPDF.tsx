@@ -1,4 +1,4 @@
-// src/RelatorioPDF.tsx - CÓDIGO FINAL COM OTIMIZAÇÃO DE ESPAÇO E CONTROLE DE QUEBRA DE PÁGINA
+// src/RelatorioPDF.tsx - CÓDIGO FINAL COM CORREÇÃO DO ESPAÇAMENTO DO CABEÇALHO
 
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
@@ -16,6 +16,7 @@ fotosdepois: string[] | null;
 }
 
 export interface RelatorioData {
+// ...
 title: string;
 company: {
 cnpjempresa: string;
@@ -41,7 +42,7 @@ nomeprojeto: string | null;
 }
 
 
-// Estilos (Modificado o padding superior da página principal para 130)
+// Estilos (Mantido o paddingTop para reserva de espaço: 130)
 const styles = StyleSheet.create({
 page: { paddingHorizontal: 30, paddingTop: 130, paddingBottom: 50, backgroundColor: '#FFFFFF' }, // <<<< AJUSTE AQUI
 headerContainer: {
@@ -153,7 +154,6 @@ marginBottom: 50,
 
 // FUNÇÕES E COMPONENTES AUXILIARES (Mantidos)
 const getUniqueNrs = (data: RelatorioData): string[] => {
-// ...
     const allItems = [
         ...(data.itensobras || []),
         ...(data.itensdocumentacao || []),
@@ -171,7 +171,6 @@ const getUniqueNrs = (data: RelatorioData): string[] => {
 };
 
 const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) => {
-// ...
     const clientLogo = (data as any).clientelogo && (data as any).clientelogo.length > 0
         ? (data as any).clientelogo
         : data.logo_url;
@@ -180,10 +179,8 @@ const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) 
         ? clientLogo + '?v=cliente'
         : clientLogo;
 
-
     return (
         <Page size="A4" style={styles.coverPage}>
-        {/* ... Conteúdo da Capa ... */}
             <View style={styles.coverLogoContainer}>
                 {data.logo_url && <Image style={styles.coverLogo} src={data.logo_url} />}
                 <View style={{ width: 80 }} />
@@ -196,23 +193,18 @@ const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) 
             </View>
 
             <View style={styles.coverDetailsBlock}>
-
                 <Text style={styles.coverDetail}>
                     <Text style={styles.coverDetailBold}>Preparado por:</Text> {data.company.nomeempresa}
                 </Text>
-
                 <Text style={styles.coverDetail}>
                     <Text style={styles.coverDetailBold}>Executado por:</Text> {data.nomeinspetor}
                 </Text>
-
                 <Text style={styles.coverDetail}>
                     <Text style={styles.coverDetailBold}>Inspeção iniciada em:</Text> {data.datainicioinspecao}
                 </Text>
-
                 <Text style={styles.coverDetail}>
                     <Text style={styles.coverDetailBold}>Inspeção finalizada em:</Text> {data.datafinalinspecao}
                 </Text>
-
                 {nrsList.length > 0 && (
                     <Text style={{ ...styles.coverDetail, marginTop: 10 }}>
                         <Text style={styles.coverDetailBold}>Checklists utilizados:</Text> {nrsList.join(', ')}
@@ -224,7 +216,6 @@ const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) 
 };
 
 const StatusDot = ({ status }: { status: string }) => {
-// ...
     let color = '#AAAAAA';
     const normalizedStatus = status.trim().toLowerCase();
 
@@ -243,7 +234,7 @@ const StatusDot = ({ status }: { status: string }) => {
 };
 
 
-// NOVO COMPONENTE: Cabeçalho Fixo (Definido fora do RelatorioPDF para maior clareza, mas poderia ser interno)
+// COMPONENTE: Cabeçalho Fixo
 const HeaderComponent = ({ data }: { data: RelatorioData }) => {
     const clientLogo = (data as any).clientelogo && (data as any).clientelogo.length > 0
         ? (data as any).clientelogo
@@ -253,8 +244,8 @@ const HeaderComponent = ({ data }: { data: RelatorioData }) => {
         ? clientLogo + '?v=cliente'
         : clientLogo;
 
-    // A chave 'fixed' faz o elemento se repetir em todas as páginas do bloco <Page> onde ele está.
     return (
+        // FIXED é a chave para repetição em cada nova página
         <View style={{ paddingHorizontal: 30, position: 'absolute', top: 30, left: 0, right: 0 }} fixed>
             {/* Bloco 1: Logos e Título Principal */}
             <View style={styles.headerContainer}>
@@ -291,12 +282,10 @@ const HeaderComponent = ({ data }: { data: RelatorioData }) => {
 const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
     const nrsList = getUniqueNrs(data);
 
-    // Variável para rastrear se o primeiro bloco de conteúdo já foi renderizado.
     let isFirstSectionRendered = false;
 
-    // COMPONENTE MOVIDO: ItemRelatorio está dentro do escopo de RelatorioPDF
+    // COMPONENTE: ItemRelatorio está dentro do escopo de RelatorioPDF
     const ItemRelatorio = ({ item, forceNoBreak = false }: { item: ItemAuditoria, forceNoBreak?: boolean }) => (
-        // O 'break' só é aplicado se NÃO for o primeiro item de uma seção forçada a quebrar.
         <View
             key={item.nr + item.iteminfringido}
             style={styles.itemBox}
@@ -376,19 +365,18 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
 
     return (
         <Document>
-
-            {/* PÁGINA 1: CAPA */}
             <CapaPDF data={data} nrsList={nrsList} />
 
             {/* PÁGINA 2 em diante: CONTEÚDO DO RELATÓRIO */}
             <Page size="A4" style={styles.page}>
                 
-                {/* 1. COMPONENTE FIXO: Aparecerá em todas as quebras de página deste bloco. */}
+                {/* 1. CABEÇALHO FIXO: Posição absoluta */}
                 <HeaderComponent data={data} />
                 
-                {/* 2. CONTEÚDO DA PÁGINA (Com margem superior reservada) */}
-                <View> 
-                    <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 5, fontWeight: 'bold', marginTop: 10 }}>SITUAÇÃO GERAL</Text>
+                {/* 2. CONTEÚDO DA PÁGINA: Padding Top para afastar o conteúdo do cabeçalho fixo */}
+                <View style={{ paddingTop: 15 }}>
+
+                    <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 5, fontWeight: 'bold' }}>SITUAÇÃO GERAL</Text>
 
                     {/* 1 ITENS DE DOCUMENTAÇÃO */}
                     {renderSection(data.itensdocumentacao, 'Itens de Documentação')}
@@ -417,7 +405,6 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
                         );
                     })()}
                 </View>
-
             </Page>
         </Document>
     );
