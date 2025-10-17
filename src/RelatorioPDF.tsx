@@ -1,4 +1,4 @@
-// src/RelatorioPDF.tsx - CÓDIGO FINAL COM CORREÇÃO DO ESPAÇAMENTO DO CABEÇALHO
+// src/RelatorioPDF.tsx - CÓDIGO FINAL CORRIGIDO (Escopo e Espaçamento)
 
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
@@ -16,7 +16,6 @@ fotosdepois: string[] | null;
 }
 
 export interface RelatorioData {
-// ...
 title: string;
 company: {
 cnpjempresa: string;
@@ -44,7 +43,7 @@ nomeprojeto: string | null;
 
 // Estilos (Mantido o paddingTop para reserva de espaço: 130)
 const styles = StyleSheet.create({
-page: { paddingHorizontal: 30, paddingTop: 130, paddingBottom: 50, backgroundColor: '#FFFFFF' }, // <<<< AJUSTE AQUI
+page: { paddingHorizontal: 30, paddingTop: 130, paddingBottom: 50, backgroundColor: '#FFFFFF' }, 
 headerContainer: {
 flexDirection: 'row',
 justifyContent: 'space-between',
@@ -152,7 +151,7 @@ marginBottom: 50,
 }
 });
 
-// FUNÇÕES E COMPONENTES AUXILIARES (Mantidos)
+// FUNÇÕES E COMPONENTES AUXILIARES (Mantidos fora)
 const getUniqueNrs = (data: RelatorioData): string[] => {
     const allItems = [
         ...(data.itensobras || []),
@@ -215,24 +214,6 @@ const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) 
     );
 };
 
-const StatusDot = ({ status }: { status: string }) => {
-    let color = '#AAAAAA';
-    const normalizedStatus = status.trim().toLowerCase();
-
-    if (normalizedStatus === 'não conforme') {
-        color = '#FF0000';
-    } else if (normalizedStatus === 'conforme') {
-        color = '#008000';
-    }
-
-    return (
-        <View style={{
-            ...styles.statusDot,
-            backgroundColor: color
-        }} />
-    );
-};
-
 
 // COMPONENTE: Cabeçalho Fixo
 const HeaderComponent = ({ data }: { data: RelatorioData }) => {
@@ -284,7 +265,26 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
 
     let isFirstSectionRendered = false;
 
-    // COMPONENTE: ItemRelatorio está dentro do escopo de RelatorioPDF
+    // COMPONENTE MOVIDO PARA DENTRO: StatusDot (Necessário para ItemRelatorio)
+    const StatusDot = ({ status }: { status: string }) => {
+        let color = '#AAAAAA';
+        const normalizedStatus = status.trim().toLowerCase();
+
+        if (normalizedStatus === 'não conforme') {
+            color = '#FF0000';
+        } else if (normalizedStatus === 'conforme') {
+            color = '#008000';
+        }
+
+        return (
+            <View style={{
+                ...styles.statusDot,
+                backgroundColor: color
+            }} />
+        );
+    };
+
+    // COMPONENTE MOVIDO PARA DENTRO: ItemRelatorio (Resolve o erro de escopo)
     const ItemRelatorio = ({ item, forceNoBreak = false }: { item: ItemAuditoria, forceNoBreak?: boolean }) => (
         <View
             key={item.nr + item.iteminfringido}
@@ -353,7 +353,8 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
         }
 
         return (
-            <View style={{ ...styles.sectionContainer, marginBottom: 15 }} break={shouldBreak}>
+            // Esta View contém a chamada ao ItemRelatorio, que agora está no escopo
+            <View style={{ ...styles.sectionContainer, marginBottom: 15 }} break={shouldBreak}> 
                 <Text style={styles.sectionHeader}>{title} ({items.length})</Text>
 
                 {firstItem && <ItemRelatorio key={firstItem.nr + firstItem.iteminfringido} item={firstItem} forceNoBreak={true} />}
@@ -374,23 +375,17 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
                 <HeaderComponent data={data} />
                 
                 {/* 2. CONTEÚDO DA PÁGINA: Padding Top para afastar o conteúdo do cabeçalho fixo */}
-                <View style={{ paddingTop: 15 }}>
-
+                <View style={{ paddingTop: 15 }}> {/* AJUSTE MANTIDO PARA ESPAÇAMENTO*/}
+                    
                     <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 5, fontWeight: 'bold' }}>SITUAÇÃO GERAL</Text>
 
-                    {/* 1 ITENS DE DOCUMENTAÇÃO */}
+                    {/* SEÇÕES DE CONTEÚDO */}
                     {renderSection(data.itensdocumentacao, 'Itens de Documentação')}
-
-                    {/* 2. ITENS DE MÁQUINAS E EQUIPAMENTOS */}
                     {renderSection(data.itensmaquinasequipamentos, 'Máquinas e Equipamentos')}
-
-                    {/* 3. ITENS DE OBRA/CAMPO */}
                     {renderSection(data.itensobras, 'Itens de Campo e Obra')}
-
-                    {/* 4. ITENS DE ÁREA DE VIVÊNCIA */}
                     {renderSection(data.itensareadevivencia, 'Área de Vivência e Conforto')}
 
-                    {/* 5. CHECKLIST UTILIZADO */}
+                    {/* CHECKLIST UTILIZADO */}
                     {data.checklistutilizado.length > 0 && (() => {
                         const shouldBreak = isFirstSectionRendered;
                         if (!isFirstSectionRendered) isFirstSectionRendered = true; 
