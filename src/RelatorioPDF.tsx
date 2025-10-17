@@ -379,7 +379,16 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
                 {/* 2. CONTEÚDO DA PÁGINA: O View do conteúdo não precisa de paddingTop. O styles.page e o spacer já definiram o espaço total. */}
                 <View> 
                     
-                    <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 5, fontWeight: 'bold' }}>SITUAÇÃO GERAL</Text>
+                    <Text style={{ 
+                        fontSize: 16, 
+                        textAlign: 'center', 
+                        marginBottom: 5, 
+                        fontWeight: 'bold',
+                        // <<< ADICIONADO PADDING VERTICAL DE 16PT AQUI
+                        paddingVertical: 16, 
+                    }}>
+                        SITUAÇÃO GERAL
+                    </Text>
 
                     {/* SEÇÕES DE CONTEÚDO */}
                     {renderSection(data.itensdocumentacao, 'Itens de Documentação')}
