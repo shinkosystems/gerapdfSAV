@@ -1,4 +1,4 @@
-// src/RelatorioPDF.tsx - CÓDIGO FINAL COM SPACER E ESCOPO CORRIGIDOS
+// src/RelatorioPDF.tsx - CÓDIGO FINAL COM RESPONSÁVEL NA CAPA
 
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
@@ -29,6 +29,7 @@ datainicio: string;
 itensobras: ItemAuditoria[];
 report_date: string;
 nomeinspetor: string;
+responsavel: string; // <-- Campo 'responsavel'
 nrsutilizadas: string[];
 datafinalinspecao: string;
 itensdocumentacao: ItemAuditoria[];
@@ -204,6 +205,12 @@ const CapaPDF = ({ data, nrsList }: { data: RelatorioData, nrsList: string[] }) 
                 <Text style={styles.coverDetail}>
                     <Text style={styles.coverDetailBold}>Inspeção finalizada em:</Text> {data.datafinalinspecao}
                 </Text>
+                {/* ------------------------------------------- */}
+                {/* NOVO CAMPO: Responsável pelo relatório */}
+                <Text style={styles.coverDetail}>
+                    <Text style={styles.coverDetailBold}>Responsável pelo relatório:</Text> {data.responsavel}
+                </Text>
+                {/* ------------------------------------------- */}
                 {nrsList.length > 0 && (
                     <Text style={{ ...styles.coverDetail, marginTop: 10 }}>
                         <Text style={styles.coverDetailBold}>Checklists utilizados:</Text> {nrsList.join(', ')}
