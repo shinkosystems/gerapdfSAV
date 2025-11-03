@@ -403,10 +403,10 @@ const RelatorioPDF = ({ data }: { data: RelatorioData }) => {
                     </Text>
 
                     {/* SEÇÕES DE CONTEÚDO */}
-                    {renderSection(data.itensdocumentacao, 'Itens de Documentação')}
+                    {renderSection(data.itensdocumentacao, 'Documentação Administrativa')}
                     {renderSection(data.itensmaquinasequipamentos, 'Máquinas e Equipamentos')}
-                    {renderSection(data.itensobras, 'Itens de Campo e Obra')}
-                    {renderSection(data.itensareadevivencia, 'Área de Vivência e Conforto')}
+                    {renderSection(data.itensobras, 'Obra/Campo')}
+                    {renderSection(data.itensareadevivencia, 'Área de Vivência')}
 
                     {/* CHECKLIST UTILIZADO */}
                     {data.checklistutilizado.length > 0 && (() => {
